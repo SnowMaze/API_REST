@@ -97,15 +97,22 @@ app.put('/api/tools/:id', async (req, res) => {
                             if (key==="vendor"&& updates[key]===""){
                                     return res.status(400).json({ error: 'Vendor is required' });   
                                 }else{
-                                     tool[key] = updates[key]; 
+                                    if(key==="status" && !(updates[key]=="active" 
+                                    || !updates[key]=="deprecated"
+                                    || !updates[key]=="trial"  )){
+                                        return res.status(400).json({ error: 'Invalid status active||deprecated||trial' });
+                                    }else{
+                                         tool[key] = updates[key]; 
+                                    }
+    
                                 }
-                            
                         }
                     }
                 }
             }
         }   
     });
+    tool["updated_at"] = new Date();
     res.json({
     message: "tool updated successfully",
     data: tool
